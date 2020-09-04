@@ -1,5 +1,4 @@
-# BLNS
-Brihodakar Large Number System!!!
+# Brihodakar Large Number System!!!
 
 Information
 
