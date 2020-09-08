@@ -63,8 +63,8 @@ void array_management(char brihodakar[], int option);                           
                                                                                 /*          Option 1: Input/Unorganized data -> Standard Brihodakar array
                                                                                             Option 2: Standard Brihodakar array -> Big-endian converted Brihodakar array for operations
                                                                                 */
-void add_array(char conv_array1[], char conv_array2[], char answer[]);          //  BLNS: Adds two big-endian converted Brihodakar arrays, brihodakar1 and brihodakar2
-void subtract_array(char conv_array1[], char conv_array2[], char answer[]);     //  BLNS: Subtracts two big-endian converted Brihodakar arrays, conv_array1 MINUS conv_array2. ORDER MATTERS
+void add_array(const char conv_array1[], const char conv_array2[], char answer[]);          //  BLNS: Adds two big-endian converted Brihodakar arrays, brihodakar1 and brihodakar2
+void subtract_array(const char conv_array1[], const char conv_array2[], char answer[]);     //  BLNS: Subtracts two big-endian converted Brihodakar arrays, conv_array1 MINUS conv_array2. ORDER MATTERS
 void copy_array(char destination[], const char source[]);                       //  BLNS: Copies the source array into the destination array
 
 
@@ -155,6 +155,8 @@ void display_num(const char brihodakar[])
     {
         tempstore[m] = tempstore[m] + '0';
     }
+    if (1/* Set this to 0 to see the terminating character A*/)
+        tempstore[m] = '\0';
 
     printf(tempstore);
     return;
@@ -255,7 +257,7 @@ void array_management(char brihodakar[], int option)
     return;
 }
 
-void add_array(char conv_array1[], char conv_array2[], char answer[])
+void add_array(const char conv_array1[], const char conv_array2[], char answer[])
 {
     int i;
 
@@ -266,21 +268,21 @@ void add_array(char conv_array1[], char conv_array2[], char answer[])
     }
     else
     {
-        char tempstore[max_num_size+5] = "";
-        copy_array(tempstore, conv_array1); // this allows us to add carries to conv_array1, since the original value of conv_array1 is now stored here.
+        char temp_array1[max_num_size+5] = "";
+        copy_array(temp_array1, conv_array1); // this allows us to add carries to conv_array1, since the original value of conv_array1 is now preserved.
 
         for (i=max_num_size-1; i>=0; i--)
         {
             int digitholder;
 
-            digitholder = conv_array1[i] + conv_array2[i];
+            digitholder = temp_array1[i] + conv_array2[i]; // conv_array1 IS temp_array1!!!!
 
             if (digitholder > 9) //  Carrying branch
             {
                 digitholder = digitholder - 10;
                 answer[i] = digitholder;   // Brihodakar3 is the answer array that holds the computation, it must be initialized to Big-Endian 0 array first.
                 if (i > 0)
-                    conv_array1[i-1] = conv_array1[i-1] + 1;
+                    temp_array1[i-1] = temp_array1[i-1] + 1;
                 else
                     printf("\nWARNING!!!! OVERFLOW!!! THE ANSWER MAY BE WRONG\n");
             }
@@ -289,8 +291,6 @@ void add_array(char conv_array1[], char conv_array2[], char answer[])
                 answer[i] = digitholder;
             }
         }
-
-        copy_array(conv_array1, tempstore);
     }
     return;
 }
@@ -309,7 +309,7 @@ void copy_array(char destination[], const char source[]) // FINAL
     return;
 }
 
-void subtract_array(char conv_array1[], char conv_array2[], char answer[])
+void subtract_array(const char conv_array1[], const char conv_array2[], char answer[])
 {
     int i;
 
@@ -320,21 +320,21 @@ void subtract_array(char conv_array1[], char conv_array2[], char answer[])
     }
     else
     {
-        char tempstore[max_num_size+5] = "";
-        copy_array(tempstore, conv_array1); // this allows us to add carries to conv_array1, since the original value of conv_array1 is now stored here.
+        char temp_array1[max_num_size+5] = "";
+        copy_array(temp_array1, conv_array1); // this allows us to add carries to conv_array1, since the original value of conv_array1 is now preserved.
 
         for (i=max_num_size-1; i>=0; i--)
         {
             signed int digitholder;
 
-            digitholder = conv_array1[i] - conv_array2[i];
+            digitholder = temp_array1[i] - conv_array2[i]; // conv_array1 IS temp_array1!!!!
 
             if (digitholder < 0) //  Carrying branch
             {
                 digitholder = digitholder + 10;
                 answer[i] = digitholder;   // Brihodakar3 is the answer array that holds the computation, it must be initialized to Big-Endian 0 array first.
                 if (i > 0)
-                    conv_array1[i-1] = conv_array1[i-1] - 1;
+                    temp_array1[i-1] = temp_array1[i-1] - 1;
                 else
                     printf("\nWARNING!!!! OVERFLOW!!! THE ANSWER MAY BE WRONG\n");
             }
@@ -343,8 +343,6 @@ void subtract_array(char conv_array1[], char conv_array2[], char answer[])
                 answer[i] = digitholder;
             }
         }
-
-        copy_array(conv_array1, tempstore);
     }
     return;
 }
