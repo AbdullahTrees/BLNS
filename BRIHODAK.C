@@ -55,9 +55,9 @@
     = Any other questions, be sure to let me know in Discord!
 */
 
-#define max_num_size 105  // DEFINES THE WORKING AREA OF THE BRIHODAKAR ARRAY: change this for dynamically large arrays, make sure to change declarations on BrihodakarX[] accordingly, always make Brihodakar array size slightly larger than this value
+#define max_num_size 100  // DEFINES THE WORKING AREA OF THE BRIHODAKAR ARRAY: change this for dynamically large arrays, make sure to change declarations on BrihodakarX[] accordingly, always make Brihodakar array size slightly larger than this value
 
-void display_num(char brihodakar[]);                                            //  BLNS: Displays the Brihodakar array in human-readable format
+void display_num(const char brihodakar[]);                                            //  BLNS: Displays the Brihodakar array in human-readable format
 void input_to_array(char brihodakar[], int numsize);                            //  BLNS: Regulated input segment (numsize allows for custom input size)
 void array_management(char brihodakar[], int option);                           //  BLNS: Multi-purpose array management function
                                                                                 /*          Option 1: Input/Unorganized data -> Standard Brihodakar array
@@ -136,14 +136,27 @@ int main(void)
 	return 0;
 }
 
-void display_num(char brihodakar[])
+void display_num(const char brihodakar[])
 {
-	int m;
+	/*int m;
     for (m=0; brihodakar[m] != 'A'; m++)
     {
         printf("%d", brihodakar[m]);
     }
     //printf("%c", brihodakar[m]); // uncomment to display terminating character.
+    return;
+    LOW-PERF Printer*/
+
+    int m;
+    char tempstore[max_num_size+5] = "";
+    copy_array(tempstore, brihodakar);
+
+    for (m=0; tempstore[m] != 'A'; m++)
+    {
+        tempstore[m] = tempstore[m] + '0';
+    }
+
+    printf(tempstore);
     return;
 }
 
@@ -155,25 +168,39 @@ void input_to_array(char brihodakar[], int numsize)
 	input:
 		for (i=0; i<numsize; i++)
 		{
-			in = getche();
+			in = getch();
 
 			if (in >= '0' && in <= '9')
 			{
 				brihodakar[i] = in - '0';
 				if (i == numsize - 1)
 					brihodakar[i+1] = 'A';
+                printf("%c", in);
 			}
 			else
 			{
 				if (in == '\r')
 				{
 					brihodakar[i] = 'A'; // Terminating character, use this to test
+					printf("\n");
 					break;
 				}
 				if (in == '.')
 				{
 					printf("\nSorry, Brihodakar is for integers only... Please try again\nPlease enter the number: ");
 					goto input;
+				}
+				if (in == '\b')
+				{
+					if (i == 0)
+                    {
+                        i--;
+                        continue;
+                    }
+                    else
+                        i = i - 2;
+                    printf("\b \b");
+                    continue;
 				}
 
 				printf("   Illegitimate input, please enter numbers only, try again\nPlease enter the number: ");
