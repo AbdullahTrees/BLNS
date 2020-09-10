@@ -22,9 +22,9 @@ Very simple. Obviously I'm not the first person to come up with this, but I have
 
 This is how a standard Brihodakar array should look like in memory:
 
-         ```brihodakar[10] = [1 2 3 4 5 65 0 0 0 0]               (decimal/int view) (human-interpretable input/output format)
+            brihodakar[10] = [1 2 3 4 5 65 0 0 0 0]               (decimal/int view) (human-interpretable input/output format)
             brihodakar[10] = [A(nul)(nul)(nul)(nul)]         (char view)
-            brihodakar[10] = [01 02 03 04 05 41 00 00 00 00]      (expected memory dump of relevant bits)```
+            brihodakar[10] = [01 02 03 04 05 41 00 00 00 00]      (expected memory dump of relevant bits)
 
 Expected data:  * Integers 0 through 9 = digits
                 * 'A' = Terminating character
@@ -37,11 +37,11 @@ Oh, since I'm not some savant, I decided to implement addition and subtraction i
 
 This is what a Big-Endian array should look like:
              ```brihodakar1[15] = [0 0 0 0 0 0 0 0 1 2 3 4 5 6 A]
-                brihodakar2[15] = [0 0 0 0 0 0 0 0 1 2 3 4 5 6 A]
-        lets add those 2...
+            +   brihodakar2[15] = [0 0 0 0 0 0 0 0 1 2 3 4 5 6 A]
+   let's add those 2...             ---------------------------------
                 brihodakar3[15] = [0 0 0 0 0 0 0 0 2 4 6 9 1 2 A]```
 
-        If we try displaying that right now with our display_num() function, there's gonna be a lot of useless zeroes in the front, hence array_management() can convert Big-Endian Brihodakar arrays to Standard, and vice versa.
+If we try displaying that right now with our display_num() function, there's gonna be a lot of useless zeroes in the front, hence array_management() can convert Big-Endian Brihodakar arrays to Standard, and vice versa.
 
     = A getche() loop cycles and takes in character inputs from the keyboard and stores numbers into the Brihodakar array PER DIGIT. The 'char' data type is only really being used for smaller memory footprint,
         Instead of storing the characters 0 through 9, we instead store the numbers 0 through 9, directly into the array, for easier calculation(imagine having to subtract - '0' all the time, eww).
