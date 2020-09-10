@@ -1,8 +1,9 @@
 # Brihodakar Large Number System!!!
 
-Information
+### What is dis?
+Brihodakar(বৃহদাকার) Large Number System is my first hobby project in prog 
 
-    Basically, it is a string(terminated with 'A') of numbers, so there is no size limit to the number that it can hold except for the size of the array.
+  Basically, it is a string(terminated with 'A') of numbers, so there is no size limit to the number that it can hold except for the size of the array.
     = I intended the following things when making it:   1) Not complicated (it can become big of course, but shouldn't use things that I do not currently understand, such as typedefs and pointer arithmetic
                                                         2) Easily extendable. For only a proof of concept I am currently limiting the size of the array to hold 100-digit numbers, but there's no reason why these principles can't work for larger digit numbers. Hence I expect BLNS to be easily extendable so that just by changing the constant I can work with 10-digit or 10000-digit numbers.
                                                         3) Bug-free. This isn't really a complicated program, so I need to make sure BLNS works properly for ALL numbers. Since addition, subtraction, etc. all these operations are being implemented by the programmer(me!), there is no guarantee that the correct answer is returned by the algorithm that I've invented. For now trial and error seems to show that my algorithm works, but there may be 1 or 2 wierd edge cases. Idk how to guarantee that my algorithm that I've programmed works for all numbers, but I want to get to that point.
