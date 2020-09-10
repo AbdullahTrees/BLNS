@@ -36,14 +36,16 @@ Oh, since I'm not some savant, I decided to implement addition and subtraction i
  2) Per digit addition (this means implementing carrying, overflow, etc. manually, so...
 
 This is what a Big-Endian array should look like:
-             ```brihodakar1[15] = [0 0 0 0 0 0 0 0 1 2 3 4 5 6 A]
-            +   brihodakar2[15] = [0 0 0 0 0 0 0 0 1 2 3 4 5 6 A]
-   let's add those 2...             ---------------------------------
-                brihodakar3[15] = [0 0 0 0 0 0 0 0 2 4 6 9 1 2 A]```
+```
+             brihodakar1[15] = [0 0 0 0 0 0 0 0 1 2 3 4 5 6 A]
+         +   brihodakar2[15] = [0 0 0 0 0 0 0 0 1 2 3 4 5 6 A]
+     let's add those 2...     ---------------------------------
+             brihodakar3[15] = [0 0 0 0 0 0 0 0 2 4 6 9 1 2 A]
+```
 
 If we try displaying that right now with our display_num() function, there's gonna be a lot of useless zeroes in the front, hence array_management() can convert Big-Endian Brihodakar arrays to Standard, and vice versa.
 
-    = A getche() loop cycles and takes in character inputs from the keyboard and stores numbers into the Brihodakar array PER DIGIT. The 'char' data type is only really being used for smaller memory footprint,
+= A getche() loop cycles and takes in character inputs from the keyboard and stores numbers into the Brihodakar array PER DIGIT. The 'char' data type is only really being used for smaller memory footprint,
         Instead of storing the characters 0 through 9, we instead store the numbers 0 through 9, directly into the array, for easier calculation(imagine having to subtract - '0' all the time, eww).
         Displaying the array is also very simple. printf("%d", brihodakar[number]) works as C does not distinguish between chars and ints, and allows one to be treated like the other.
 
