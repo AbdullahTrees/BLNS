@@ -17,6 +17,8 @@ I intended the following things when making it:
 * **Bug-free.** This isn't really a complicated program, so I need to make sure BLNS works properly for ALL numbers. Since addition, subtraction, etc. all these operations are being implemented by the programmer(me! ^\_^ helo!), there is no guarantee that the correct answer is returned by the algorithm that I've invented. For now trial and error seems to show that my algorithm works, but there may be 1 or 2 wierd edge cases. I don't know how to guarantee that my algorithm that I've programmed works for all numbers, but I want to get closer and closer to that point.
 
 ### Soo.... How does the BLNS work?
+
+###### Brihodakar arrays
 > Basically, it is a string(terminated with 'A') of numbers, so there is no size limit to the number that it can hold except for the size of the array.
 Very simple. Obviously I'm not the first person to come up with this, but I haven't really done/seen anything like this before. 
 
@@ -26,16 +28,22 @@ This is how a standard Brihodakar array should look like in memory:
             brihodakar[10] = [A(nul)(nul)(nul)(nul)]         (char view)
             brihodakar[10] = [01 02 03 04 05 41 00 00 00 00]      (expected memory dump of relevant bits)
 
-Expected data:  * Integers 0 through 9 = digits
-                * 'A' = Terminating character
-                * 'S' = Terminating character implying negative character?? (not implemented yet, I need a way to define negative numbers tho).
+Expected data:  
+* Integers 0 through 9 = digits
+* 'A' = Terminating character
+* 'S' = Terminating character implying negative character?? (not implemented yet, I need a way to define negative numbers tho).
 Unexpected data: *ANYTHING ELSE!*
 
-Oh, since I'm not some savant, I decided to implement addition and subtraction in *the way humans normally add numbers*. This means...
- 1) When numbers are different sizes, addition is going to be utter chaos. We need to convert arrays to Big-Endian (basically significant digits at the very end, while still retaining the same order)
- 2) Per digit addition (this means implementing carrying, overflow, etc. manually, so...
+###### Storing a user-generated number into an array (stdin -> array)
+A getche() loop cycles and takes in character inputs from the keyboard and stores numbers into the Brihodakar array PER DIGIT. (The 'char' data type is only really being used for smaller memory footprint)
+Instead of storing the *characters* 0 through 9, we instead store the *numbers* 0 through 9, directly into the array, for easier calculation (imagine having to subtract `- '0'` all the time, eww).
 
-This is what a Big-Endian array should look like:
+###### Addition/Subtraction
+Since I'm not some savant, I decided to implement addition and subtraction in *the way humans normally add and subtract numbers*. This means...
+ 1) When numbers are different sizes, addition is going to be utter chaos. We need to convert arrays to Big-Endian (basically significant digits at the very end, while still retaining the same order). If you think about it, this is basically how kindergartners add and subtract numbers
+ 2) Per digit addition/subtraction (this means implementing carrying, overflow, etc. manually)
+
+This is what a Big-Endian array should look like and how two numbers get added, does this look familiar?:
 ```
              brihodakar1[15] = [0 0 0 0 0 0 0 0 1 2 3 4 5 6 A]
          +   brihodakar2[15] = [0 0 0 0 0 0 0 0 1 2 3 4 5 6 A]
@@ -43,11 +51,12 @@ This is what a Big-Endian array should look like:
              brihodakar3[15] = [0 0 0 0 0 0 0 0 2 4 6 9 1 2 A]
 ```
 
-If we try displaying that right now with our display_num() function, there's gonna be a lot of useless zeroes in the front, hence array_management() can convert Big-Endian Brihodakar arrays to Standard, and vice versa.
+###### Displaying the stored number
+Displaying the array is also very simple. `printf("%d", brihodakar[array_index])` works as C does not distinguish between `char`s and `int`s, and allows one to be treated like the other. Now we can just generate a `for` loop and stuff that into a function! And that's how `display_num` was born...
 
-= A getche() loop cycles and takes in character inputs from the keyboard and stores numbers into the Brihodakar array PER DIGIT. The 'char' data type is only really being used for smaller memory footprint,
-        Instead of storing the characters 0 through 9, we instead store the numbers 0 through 9, directly into the array, for easier calculation(imagine having to subtract - '0' all the time, eww).
-        Displaying the array is also very simple. printf("%d", brihodakar[number]) works as C does not distinguish between chars and ints, and allows one to be treated like the other.
+
+If we try displaying that right now with our `display_num()` function, there's gonna be a lot of useless zeroes in the front, hence array_management() can convert Big-Endian Brihodakar arrays to Standard, and vice versa.
+
 
     = The following things work and I'm pretty sure should be bug-free... Please still check them and comment, of course.
         display_num(); copy_array(); input_to_array();   // feel free to still check them out of course, humans can never guarantee anything
