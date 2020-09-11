@@ -6,18 +6,16 @@
 #include <stdio.h>
 #include <conio.h>
 
-#define _BRIHODAKAR_
-
 #ifndef max_num_size
-
     #define max_num_size 100
-
 #endif // max_num_size safety check
 
 
-#ifdef _BRIHODAKAR_
+#ifndef _BRIHODAKAR_    // Declaration of BLNS ONLY IF it wasn't defined before.
+    #define _BRIHODAKAR_
 
-void display_num(const char brihodakar[]);												//  BLNS: Displays the relevant Brihodakar number stored in array
+
+void display_num(char brihodakar[]);												//  BLNS: Displays the relevant Brihodakar number stored in array
 void display_array(const char brihodakar[]);                                            //  BLNS: Displays the entire Brihodakar array in human-readable format
 void input_to_array(char brihodakar[], int numsize);									//  BLNS: Regulated input segment (numsize allows for custom input size)
 void array_management(char brihodakar[], int option);									//  BLNS: Multi-purpose array management function
@@ -32,7 +30,7 @@ void subtract_array(const char conv_array1[], const char conv_array2[], char ans
 
 
 
-void display_num(const char brihodakar[])
+void display_num(char brihodakar[])
 {
 	// DEPRECATED LOW-PERF Printer
 	/*int m;
@@ -48,15 +46,14 @@ void display_num(const char brihodakar[])
 	char tempstore[max_num_size + 5] = "";
 	copy_array(tempstore, brihodakar);
 
+	array_management(tempstore, 1); // So we see just the number and not all the zeroes from the Big-Endian conversion...
+
 	for (m = 0; tempstore[m] != 'A'; m++)
-	{
 		tempstore[m] = tempstore[m] + '0';
-	}
-	#ifndef DEBUG		/* Write `#define DEBUG` see the terminating character A*/
+
+	#ifndef DEBUG		/* Write `#define DEBUG` to see the terminating character A*/
 		tempstore[m] = '\0';
     #endif
-
-    array_management(tempstore, 1); // So we see just the number and not all the zeroes from the Big-Endian conversion...
 
 	printf(tempstore);
 	return;
