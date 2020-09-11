@@ -3,18 +3,22 @@
 ## What is dis? :/
 Brihodakar(বৃহদাকার) Large Number System is my first hobby project in programming, the first time I'm dealing with code that's larger than 100 lines. 
 
-The Brihodakar Large Number System (from now on BLNS) implements basic operations such as addition and subtraction, which it then performs on specially constructed arrays called 'Brihodakar arrays'. Brihodakar arrays are data structures used to contain and display numbers of very large sizes.
+The Brihodakar Large Number System (from now on BLNS) implements basic operations such as addition and subtraction, which it then performs on specially constructed arrays called 'Brihodakar arrays'. Brihodakar arrays are data structures used to contain and display numbers of very large sizes. Brihodakar arrays only work with integers.
 
 ## Why are you making this?
-Good question. First of all, I'm a new programmer and I have no idea about the real world, so there's that. For me, BLNS was quite fun as it was something I wrote up entirely using what I knew and understood, so it was something I could relate to: I need a challenge that's easy and not impossible...
+- Good question. First of all, I'm a new programmer and I have no idea about the real world, so there's that. For me, BLNS was quite fun as it was something I wrote up entirely using what I knew and understood, so it was something I could relate to: I need a challenge that's easy and not impossible...
 
-Also, try adding 301974818932465466578913243242342347328941234 to 1823749701842756793485627934851. Too big for unsigned long long int? Long double doesn't hold the entire answer? Yeah, I thought so...
+- Also, try adding 301974818932465466578913243242342347328941234 to 1823749701842756793485627934851. Too big for unsigned long long int? Long double doesn't hold the entire answer? Yeah, I thought so...
+
+- I firstly wanted to handle large numbers in C greater than `unsigned long long` but was disappointed to see 
 
 ## Goals
 I intended the following things when making it:
 * **Not complicated.** It can become big of course, but shouldn't use things that I do not currently understand, such as `typedefs` and pointer arithmetic. I think expert/proficient C programmers who have spent years using C will cringe at some of the things I do (trust me, it was worse before...): However, you might have to keep those feelings to yourself. At my current level I only know all of the program control statements, very basic knowledge of data types and very basic use of some special quirky tools in C that I have no idea about, but managed to implement it because it was just too convenient to not use (like #define)
 * **Easily extendable.** Only as a proof of concept I am currently limiting the size of the array to hold 100-digit numbers, but there's no reason why these principles can't work for larger digit numbers. Hence I expect BLNS to be easily extendable so that just by changing the constant I can work with 10-digit or 10000-digit numbers!
 * **Bug-free.** This isn't really a complicated program, so I need to make sure BLNS works properly for ALL numbers. Since addition, subtraction, etc. all these operations are being implemented by the programmer(me! ^\_^ helo!), there is no guarantee that the correct answer is returned by the algorithm that I've invented. For now trial and error seems to show that my algorithm works, but there may be 1 or 2 wierd edge cases. I don't know how to guarantee that my algorithm that I've programmed works for all numbers, but I want to get closer and closer to that point.
+I know there are other `bignum` libraries out there which contain more operators of complex types (sqrt, ln, e^ ), use larger numbers, and even in record time, but those libraries are so ridiculously complex that it is completely unusable to me and other newcomers to C. Hence, BLNS also attempts to...
+* **Easily Portable.**  
 
 ## Soo.... How does the BLNS work?
 
@@ -57,7 +61,7 @@ Displaying the array is also very simple. `printf("%d", brihodakar[array_index])
 And that's how it was for quite a while. Until someone in a Programming Discord Server pointed out that `printf` format specifiers can slow a program down noticeably, being fine with 100-500 digit numbers, but
 
 #### Array Management
-If we try displaying that right now with our `display_num()` function, there's gonna be a lot of useless zeroes in the front, hence array_management() can convert Big-Endian Brihodakar arrays to Standard, and vice versa.
+If we try displaying that right now with our `display_num()` function, there's gonna be a lot of useless zeroes in the front, hence `array_management()` can convert Big-Endian Brihodakar arrays to Standard, and vice versa.
 
 
 
