@@ -10,7 +10,7 @@ The Brihodakar Large Number System (from now on BLNS) implements basic operation
 
 - Also, try adding 301974818932465466578913243242342347328941234 to 1823749701842756793485627934851. Too big for unsigned long long int? Long double doesn't hold the entire answer? Yeah, I thought so...
 
-- I firstly wanted to handle large numbers in C greater than `unsigned long long` but was disappointed to see 
+- I firstly wanted to handle large numbers in C greater than `unsigned long long` but was disappointed to see that creating custom data types was easier said than done. So then I set out on a reasonably easy way to start using large numbers in C, but turns out that all the `bignum`(big number) libraries are very complex and difficult to start using, even for basic things like addition/subtraction and multiplication/division. So I set out on making a very simple one for myself. As I added more features, it ended up becoming a unique data type unlike others...
 
 ## Goals
 I intended the following things when making it:
@@ -18,7 +18,7 @@ I intended the following things when making it:
 * **Easily extendable.** Only as a proof of concept I am currently limiting the size of the array to hold 100-digit numbers, but there's no reason why these principles can't work for larger digit numbers. Hence I expect BLNS to be easily extendable so that just by changing the constant I can work with 10-digit or 10000-digit numbers!
 * **Bug-free.** This isn't really a complicated program, so I need to make sure BLNS works properly for ALL numbers. Since addition, subtraction, etc. all these operations are being implemented by the programmer(me! ^\_^ helo!), there is no guarantee that the correct answer is returned by the algorithm that I've invented. For now trial and error seems to show that my algorithm works, but there may be 1 or 2 wierd edge cases. I don't know how to guarantee that my algorithm that I've programmed works for all numbers, but I want to get closer and closer to that point.
 I know there are other `bignum` libraries out there which contain more operators of complex types (sqrt, ln, e^ ), use larger numbers, and even in record time, but those libraries are so ridiculously complex that it is completely unusable to me and other newcomers to C. Hence, BLNS also attempts to...
-* **Easily Portable.**  
+* **Easily Portable.** One of the good things about simple code is that it can be used very easily in other projects, and BLNS strives to achieve that level of ease. Using the entire BLNS is as simple as adding an `#include` and some `#define`s, and you can always copy and paste only the functions you need directly from the source files. 
 
 ## Soo.... How does the BLNS work?
 
@@ -32,11 +32,11 @@ This is how a standard Brihodakar array should look like in memory:
             brihodakar[10] = [A(nul)(nul)(nul)(nul)]         (char view)
             brihodakar[10] = [01 02 03 04 05 41 00 00 00 00]      (expected memory dump of relevant bits)
 
-Expected data:  
+**Expected data:**  
 * Integers 0 through 9 = digits
 * 'A' = Terminating character
 * 'S' = Terminating character implying negative character?? (not implemented yet, I need a way to define negative numbers tho).
-Unexpected data: *ANYTHING ELSE!*
+**Unexpected data:** *ANYTHING ELSE!*
 
 #### Storing a user-generated number into an array (stdin -> array)
 A getche() loop cycles and takes in character inputs from the keyboard and stores numbers into the Brihodakar array PER DIGIT. (The 'char' data type is only really being used for smaller memory footprint)
@@ -54,6 +54,7 @@ This is what a Big-Endian array should look like and how two numbers get added, 
  let's add those 2...       -----------------------------------
              brihodakar3[15] = [0 0 0 0 0 0 0 0 2 4 6 9 1 2 A]
 ```
+Sadly this does mean that my code is heavily unoptimized and BLNS is slower/clunkier than other `bignum` libraries like [GMP](https://gmplib.org/) or [InfInt](https://sercantutar.github.io/infint/). But I'm content as I'm only a beginner who didn't know what `#include` meant 3 months ago.
 
 #### Displaying the stored number
 Displaying the array is also very simple. `printf("%d", brihodakar[array_index])` works as C does not distinguish between `char`s and `int`s, and allows one to be treated like the other. Now we can just generate a `for` loop and stuff that into a function! And that's how `display_num` was born...|
@@ -62,8 +63,6 @@ And that's how it was for quite a while. Until someone in a Programming Discord 
 
 #### Array Management
 If we try displaying that right now with our `display_num()` function, there's gonna be a lot of useless zeroes in the front, hence `array_management()` can convert Big-Endian Brihodakar arrays to Standard, and vice versa.
-
-
 
 ## What else?
 Any other questions, be sure to let me know in Discord!
