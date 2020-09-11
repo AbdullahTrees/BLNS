@@ -18,7 +18,7 @@ I intended the following things when making it:
 
 ## Soo.... How does the BLNS work?
 
-##### Brihodakar arrays
+#### Brihodakar arrays
 > Basically, it is a string(terminated with 'A') of numbers, so there is no size limit to the number that it can hold except for the size of the array.
 Very simple. Obviously I'm not the first person to come up with this, but I haven't really done/seen anything like this before. 
 
@@ -34,11 +34,11 @@ Expected data:
 * 'S' = Terminating character implying negative character?? (not implemented yet, I need a way to define negative numbers tho).
 Unexpected data: *ANYTHING ELSE!*
 
-##### Storing a user-generated number into an array (stdin -> array)
+#### Storing a user-generated number into an array (stdin -> array)
 A getche() loop cycles and takes in character inputs from the keyboard and stores numbers into the Brihodakar array PER DIGIT. (The 'char' data type is only really being used for smaller memory footprint)
 Instead of storing the *characters* 0 through 9, we instead store the *numbers* 0 through 9, directly into the array, for easier calculation (imagine having to subtract `- '0'` all the time, eww).
 
-##### Addition/Subtraction
+#### Addition/Subtraction
 Since I'm not some savant, I decided to implement addition and subtraction in *the way humans normally add and subtract numbers*. This means...
  1) When numbers are different sizes, addition is going to be utter chaos. We need to convert arrays to Big-Endian (basically significant digits at the very end, while still retaining the same order). If you think about it, this is basically how kindergartners add and subtract numbers
  2) Per digit addition/subtraction (this means implementing carrying, overflow, etc. manually)
@@ -47,20 +47,21 @@ This is what a Big-Endian array should look like and how two numbers get added, 
 ```
              brihodakar1[15] = [0 0 0 0 0 0 0 0 1 2 3 4 5 6 A]
          +   brihodakar2[15] = [0 0 0 0 0 0 0 0 1 2 3 4 5 6 A]
-     let's add those 2...     ---------------------------------
+ let's add those 2...       -----------------------------------
              brihodakar3[15] = [0 0 0 0 0 0 0 0 2 4 6 9 1 2 A]
 ```
 
-##### Displaying the stored number
-Displaying the array is also very simple. `printf("%d", brihodakar[array_index])` works as C does not distinguish between `char`s and `int`s, and allows one to be treated like the other. Now we can just generate a `for` loop and stuff that into a function! And that's how `display_num` was born...
+#### Displaying the stored number
+Displaying the array is also very simple. `printf("%d", brihodakar[array_index])` works as C does not distinguish between `char`s and `int`s, and allows one to be treated like the other. Now we can just generate a `for` loop and stuff that into a function! And that's how `display_num` was born...|
 
+And that's how it was for quite a while. Until someone in a Programming Discord Server pointed out that `printf` format specifiers can slow a program down noticeably, being fine with 100-500 digit numbers, but
 
+#### Array Management
 If we try displaying that right now with our `display_num()` function, there's gonna be a lot of useless zeroes in the front, hence array_management() can convert Big-Endian Brihodakar arrays to Standard, and vice versa.
 
 
-    = The following things work and I'm pretty sure should be bug-free... Please still check them and comment, of course.
-        display_num(); copy_array(); input_to_array();   // feel free to still check them out of course, humans can never guarantee anything
-      The following things CURRENTLY DON'T WORK AND I HAVE NO IDEA WHY...
-        add_array(); // this works when max_num_size = 100, but breaks and falls into an infinite loop when it's 105. Displays garbage in the arrays. Somehow it's getting corrupted
 
-    = Any other questions, be sure to let me know in Discord!
+## What else?
+Any other questions, be sure to let me know in Discord!
+Found a bug? THANKS! Please open an issue! Or maybe let me know in Discord, that too!
+Want to copy this code? NooOOooOoo, this is something I wrote up in less than 2 months after learning C, I'm sure you can figure this kid-stuff out by yourself if you really need it...
