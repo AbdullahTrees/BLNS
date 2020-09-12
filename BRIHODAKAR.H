@@ -139,7 +139,7 @@ void array_management(char brihodakar[], int option)
 
 	switch (option)
 	{
-	case 1: //  Input --> Standard Brihodakar array
+	case 1: //  SHIFT LEFT FULLY: Input --> Standard Brihodakar array
 	{
 		if (!(brihodakar[0] == 0 && brihodakar[1] == 'A'))            // remove all leading zeroes before number
 		{                                   /// final, should be perfect,...
@@ -157,7 +157,7 @@ void array_management(char brihodakar[], int option)
 		}
 	}
 	break;
-	case 2: // Standard Brihodakar array --> Big-Endian Brihodakar array for operations
+	case 2: //  SHIFT RIGHT FULLY: Standard Brihodakar array --> Big-Endian Brihodakar array for operations
 	{
 		// WARMING: DO NOT EXECUTE THIS OPERATION ON AN UNORDERED ARRAY (perform array_management(array, 1); first)
 		while (brihodakar[max_num_size] != 'A')   /// final, should have no problems
