@@ -157,7 +157,8 @@ void array_management(char brihodakar[], int option)
 		}
 	}
 	break;
-	case 2: // SHIFT RIGHT FULLY: Standard Brihodakar array --> Big-Endian Brihodakar array for operations
+
+	case 2: //  SHIFT RIGHT FULLY: Standard Brihodakar array --> Big-Endian Brihodakar array for operations
 	{
 		// WARMING: DO NOT EXECUTE THIS OPERATION ON AN UNORDERED ARRAY (perform array_management(array, 1); first)
 		while (brihodakar[max_num_size] != 'A')   /// final, should have no problems
