@@ -16,8 +16,7 @@ int main(void)
 
     printf("\n\n\nOk... So.... \n 1) Add two numbers\n 2) Subtract #1 from #2\n 3) Subtract #2 from #1   : ");
 
-    array_management(yuugenumber1, 2);
-    array_management(yuugenumber2, 2);
+    array_management(answer, 2);
 
     switch (getche())
     {

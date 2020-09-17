@@ -33,16 +33,16 @@ void subtract_array(const char conv_array1[], const char conv_array2[], char ans
 void display_num(char brihodakar[])
 {
 	// DEPRECATED LOW-PERF Printer
-	/*int m;
+	int m;
 	for (m=0; brihodakar[m] != 'A'; m++)
 	{
 	printf("%d", brihodakar[m]);
 	}
 	//printf("%c", brihodakar[m]); // uncomment to display terminating character.
 	return;
-	*/
 
-	int m;
+
+	/*int m;
 	char tempstore[max_num_size + 5] = "";
 	copy_array(tempstore, brihodakar);
 
@@ -52,11 +52,11 @@ void display_num(char brihodakar[])
 		tempstore[m] = tempstore[m] + '0';
 
 	#ifndef DEBUG		/* Write `#define DEBUG` to see the terminating character A*/
-		tempstore[m] = '\0';
+	/*	tempstore[m] = '\0';
     #endif
 
 	printf(tempstore);
-	return;
+	return;*/
 }
 
 
@@ -152,7 +152,7 @@ void array_management(char brihodakar[], int option)
                 if (is_terminated == 0)
                 {
                     printf("\n--DEBUG: Array was unterminated!! Resetting to null array...\n");
-                    brihodakar[0] = 'A';
+                    brihodakar[0] = 0; brihodakar[1] = 'A';
                 }
 		    }
 
@@ -166,15 +166,12 @@ void array_management(char brihodakar[], int option)
 				}          // This operation can cause a large string of zeroes in brihodakar[] to turn into a null array. So, just in case
 
 				if (brihodakar[0] == 'A') // Turns a null array into an array of 0.
-				{
-					brihodakar[0] = 0; brihodakar[1] = 'A';
-				}
+                    {brihodakar[0] = 0; brihodakar[1] = 'A';}
 			}
 		}   break;
 
 		case 2: //  SHIFT RIGHT FULLY: Standard Brihodakar array --> Big-Endian Brihodakar array for operations
 		{
-		    array_management(brihodakar, 1);
 			// WARNING: DO NOT EXECUTE THIS OPERATION ON AN UNORDERED ARRAY (perform array_management(array, 1); first)
 			while (brihodakar[max_num_size] != 'A')   /// final, should have no problems
 			{
