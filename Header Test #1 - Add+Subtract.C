@@ -1,7 +1,7 @@
 #define max_num_size 230
+//#define DEBUG
 
 #include "BRIHODAKAR.H"     // Contains stdio and conio already...
-
 
 int main(void)
 {
@@ -14,9 +14,10 @@ int main(void)
     printf("\nAnd the second number, por favor: ");
     input_to_array(yuugenumber2, max_num_size);
 
-    printf("\n\n\nOk... So.... \n 1) Add two numbers\n 2) Subtract #2 from #1\n 3) Subtract #1 from #2   : ");
+    printf("\n\n\nOk... So.... \n 1) Add two numbers\n 2) Subtract #1 from #2\n 3) Subtract #2 from #1   : ");
 
-    array_management(answer, 2);
+    array_management(yuugenumber1, 2);
+    array_management(yuugenumber2, 2);
 
     switch (getche())
     {
