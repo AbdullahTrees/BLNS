@@ -15,15 +15,11 @@ int main(void)
     input_to_array(yuugenumber2, max_num_size);
 
     printf("\n\n\nOk... So.... \n 1) Add two numbers\n 2) Subtract #1 from #2\n 3) Subtract #2 from #1   : ");
-
-    array_management(yuugenumber1, 2);
-    array_management(yuugenumber2, 2);
-
     switch (getche())
     {
-        case '1':       add_array(yuugenumber1, yuugenumber2, yuugenumber2); printf("\n\n"); display_num(yuugenumber2); break;
-        case '2':       subtract_array(yuugenumber2, yuugenumber1, yuugenumber1); printf("\n\n"); display_num(yuugenumber1); break;
-        case '3':       subtract_array(yuugenumber1, yuugenumber2, yuugenumber2); printf("\n\n"); display_num(yuugenumber2); break;
+        case '1':       add_bri_num(yuugenumber1, yuugenumber2, yuugenumber2); printf("\n\n"); display_num(yuugenumber2); break;
+        case '2':       subtract_bri_num(yuugenumber2, yuugenumber1, yuugenumber1); printf("\n\n"); display_num(yuugenumber1); break;
+        case '3':       subtract_bri_num(yuugenumber1, yuugenumber2, yuugenumber2); printf("\n\n"); display_num(yuugenumber2); break;
     }
 
     return 0;

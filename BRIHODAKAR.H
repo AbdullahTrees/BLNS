@@ -14,8 +14,8 @@
 #ifndef _BRIHODAKAR_    // Declaration of BLNS ONLY IF it wasn't defined before.
     #define _BRIHODAKAR_
 
-
-void display_num(char brihodakar[]);												//  BLNS: Displays the relevant Brihodakar number stored in array
+// LOWER LEVEL FUNCTIONS: Use these directly only when necessary
+void display_num(char brihodakar[]);												    //  BLNS: Displays the relevant Brihodakar number stored in array
 void display_array(const char brihodakar[]);                                            //  BLNS: Displays the entire Brihodakar array in human-readable format
 void input_to_array(char brihodakar[], int numsize);									//  BLNS: Regulated input segment (numsize allows for custom input size)
 void array_management(char brihodakar[], int option);									//  BLNS: Multi-purpose array management function
@@ -26,6 +26,10 @@ void copy_array(char destination[], const char source[]);									//  BLNS: Copi
 void add_array(const char conv_array1[], const char conv_array2[], char answer[]);          //  BLNS: Adds two big-endian converted Brihodakar arrays, brihodakar1 and brihodakar2
 void subtract_array(const char conv_array1[], const char conv_array2[], char answer[]);     //  BLNS: Subtracts two big-endian converted Brihodakar arrays, conv_array1 MINUS conv_array2. ORDER MATTERS
 
+
+// HIGHER LEVEL FUNCTIONS: Consisting of use of multiple other functions. Much easier to use.
+void add_bri_num(char brihodakar1[], char brihodakar2[], char answer[]);
+void subtract_bri_num(char brihodakar1[], char brihodakar2[], char answer[]);
 
 
 
@@ -139,39 +143,58 @@ void array_management(char brihodakar[], int option)
 
 	switch (option)
 	{
-	case 1: //  SHIFT LEFT FULLY: Input --> Standard Brihodakar array
-	{
-		if (!(brihodakar[0] == 0 && brihodakar[1] == 'A'))            // remove all leading zeroes before number
-		{                                   /// final, should be perfect,...
-			while (brihodakar[0] == 0)     // Move every element one space forward IF there is a zero in front of it
-			{
-				int k;
-				for (k = 0; k<max_num_size; k++)
-					brihodakar[k] = brihodakar[k + 1];
-			}          // This operation can cause a large string of zeroes in brihodakar[] to turn into a null array. So, just in case
+        case 1: //  SHIFT LEFT FULLY: Input --> Standard Brihodakar array
+        {
+            if (!(brihodakar[0] == 0 && brihodakar[1] == 'A'))            // remove all leading zeroes before number
+            {                                   /// final, should be perfect,... (no it isn't lol, add a termination check pls)
+                while (brihodakar[0] == 0)     // Move every element one space forward IF there is a zero in front of it
+                {
+                    int k;
+                    for (k = 0; k<max_num_size; k++)
+                        brihodakar[k] = brihodakar[k + 1];
+                }          // This operation can cause a large string of zeroes in brihodakar[] to turn into a null array. So, just in case
 
-			if (brihodakar[0] == 'A') // Turns a null array into an array of 0.
-			{
-				brihodakar[0] = 0; brihodakar[1] = 'A';
-			}
-		}
-	}
-	break;
-	case 2: // SHIFT RIGHT FULLY: Standard Brihodakar array --> Big-Endian Brihodakar array for operations
-	{
-		// WARMING: DO NOT EXECUTE THIS OPERATION ON AN UNORDERED ARRAY (perform array_management(array, 1); first)
-		while (brihodakar[max_num_size] != 'A')   /// final, should have no problems
-		{
-			int k;
-			for (k = max_num_size; k > 0; k--)
-			{
-				brihodakar[k] = brihodakar[k - 1];
-				if (k == 1)
-					brihodakar[0] = 0;
-			}
-		}
-	}
-	break;
+                if (brihodakar[0] == 'A') // Turns a null array into an array of 0.
+                {
+                    brihodakar[0] = 0; brihodakar[1] = 'A';
+                }
+            }
+        }
+        break;
+        case 2: // SHIFT RIGHT FULLY: Standard Brihodakar array --> Big-Endian Brihodakar array for operations
+        {
+            // TERMINATION CHECK
+            {
+                int is_terminated = 0, i, j;
+                for (i=0, j = max_num_size; i < (max_num_size+5)/2 && j > 0; i++, j--)
+                {
+                    if (brihodakar[i] == 'A' || brihodakar[j] == 'A')
+                    {
+                        is_terminated = 1;
+                        break;
+                    }
+                }
+                if (is_terminated == 0)
+                {
+                    #ifdef DEBUG
+                    printf("\n--DEBUG: Array was unterminated!! Resetting to zero array...\n");
+                    #endif
+                    brihodakar[0] = 0; brihodakar[1] = 'A';
+                }
+            }
+
+            while (brihodakar[max_num_size] != 'A')   /// final, should have no problems
+            {
+                int k;
+                for (k = max_num_size; k > 0; k--)
+                {
+                    brihodakar[k] = brihodakar[k - 1];
+                    if (k == 1)
+                        brihodakar[0] = 0;
+                }
+            }
+        }
+        break;
 	}
 	return;
 }
@@ -263,5 +286,28 @@ void subtract_array(const char conv_array1[], const char conv_array2[], char ans
 	}
 	return;
 }
+
+void add_bri_num(char brihodakar1[], char brihodakar2[], char answer[])
+{
+    array_management(brihodakar1, 2);
+    array_management(brihodakar2, 2);
+    array_management(answer, 2);
+
+    add_array(brihodakar1, brihodakar2, answer);
+
+    return;
+}
+
+void subtract_bri_num(char brihodakar1[], char brihodakar2[], char answer[])
+{
+    array_management(brihodakar1, 2);
+    array_management(brihodakar2, 2);
+    array_management(answer, 2);
+
+    subtract_array(brihodakar1, brihodakar2, answer);
+
+    return;
+}
+
 
 #endif
