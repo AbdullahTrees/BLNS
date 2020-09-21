@@ -15,7 +15,7 @@
     #define _BRIHODAKAR_
 
 // LOWER LEVEL FUNCTIONS: Use these directly only when necessary
-void display_num(char brihodakar[]);												    //  BLNS: Displays the relevant Brihodakar number stored in array
+void display_num(const char brihodakar[]);											    //  BLNS: Displays the relevant Brihodakar number stored in array
 void display_array(const char brihodakar[]);                                            //  BLNS: Displays the entire Brihodakar array in human-readable format
 void input_to_array(char brihodakar[], int numsize);									//  BLNS: Regulated input segment (numsize allows for custom input size)
 void array_management(char brihodakar[], int option);									//  BLNS: Multi-purpose array management function
@@ -25,7 +25,7 @@ void array_management(char brihodakar[], int option);									//  BLNS: Multi-pu
 void copy_array(char destination[], const char source[]);									//  BLNS: Copies the source array into the destination array
 void add_array(const char conv_array1[], const char conv_array2[], char answer[]);          //  BLNS: Adds two big-endian converted Brihodakar arrays, brihodakar1 and brihodakar2
 void subtract_array(const char conv_array1[], const char conv_array2[], char answer[]);     //  BLNS: Subtracts two big-endian converted Brihodakar arrays, conv_array1 MINUS conv_array2. ORDER MATTERS
-
+void reset_array(char brihodakar[]);                                                        //  BLNS: Empties the entire Brihodakar array by writing zeroes... Equivalent to newly initializing a Brihodakar array
 
 // HIGHER LEVEL FUNCTIONS: Consisting of use of multiple other functions. Much easier to use.
 void add_bri_num(char brihodakar1[], char brihodakar2[], char answer[]);
@@ -34,7 +34,7 @@ void subtract_bri_num(char brihodakar1[], char brihodakar2[], char answer[]);
 
 
 
-void display_num(char brihodakar[])
+void display_num(const char brihodakar[])
 {
 	// DEPRECATED LOW-PERF Printer
 	/*int m;
@@ -57,6 +57,8 @@ void display_num(char brihodakar[])
 
 	#ifndef DEBUG		/* Write `#define DEBUG` to see the terminating character A*/
 		tempstore[m] = '\0';
+    #else
+        tempstore[m+1] = '\0';
     #endif
 
 	printf(tempstore);
@@ -70,12 +72,21 @@ void display_array(const char brihodakar[])
 	char tempstore[max_num_size + 5] = "";
 	copy_array(tempstore, brihodakar);
 
-	for (m = 0; tempstore[m] != 'A'; m++)
+	#ifdef DEBUG
+        #define da_condition (m < max_num_size)         // condition when debug active
+	#else
+        #define da_condition (tempstore[m] != 'A')      // condition when debug inactive
+    #endif
+	for (m = 0; da_condition; m++) // Simply, the for loop's condition changes depending on DEBUG state.
 	{
 		tempstore[m] = tempstore[m] + '0';
 	}
-	#ifndef DEBUG		/* Write `#define DEBUG` see the terminating character A*/
+    #undef da_condition
+
+	#ifndef DEBUG		/* Write `#define DEBUG` to see the terminating character A*/
 		tempstore[m] = '\0';
+    #else
+        tempstore[m+1] = '\0';
     #endif
 
 	printf(tempstore);
@@ -87,6 +98,8 @@ void input_to_array(char brihodakar[], int numsize)
 {
 	char in;
 	int i;
+
+	reset_array(brihodakar);
 
 	input:
 	for (i = 0; i<numsize; i++)
@@ -152,11 +165,13 @@ void array_management(char brihodakar[], int option)
                     int k;
                     for (k = 0; k<max_num_size; k++)
                         brihodakar[k] = brihodakar[k + 1];
-                }          // This operation can cause a large string of zeroes in brihodakar[] to turn into a null array. So, just in case
+                }
 
+            // This operation can cause a large string of zeroes in brihodakar[] to turn into a null array. So, just in case
                 if (brihodakar[0] == 'A') // Turns a null array into an array of 0.
                 {
-                    brihodakar[0] = 0; brihodakar[1] = 'A';
+                    reset_array(brihodakar);
+                    brihodakar[1] = 'A';
                 }
             }
         }
@@ -174,12 +189,14 @@ void array_management(char brihodakar[], int option)
                         break;
                     }
                 }
+
                 if (is_terminated == 0)
                 {
                     #ifdef DEBUG
                     printf("\n--DEBUG: Array was unterminated!! Resetting to zero array...\n");
                     #endif
-                    brihodakar[0] = 0; brihodakar[1] = 'A';
+                    reset_array(brihodakar);
+                    brihodakar[1] = 'A';
                 }
             }
 
@@ -286,6 +303,24 @@ void subtract_array(const char conv_array1[], const char conv_array2[], char ans
 	}
 	return;
 }
+
+
+void reset_array(char brihodakar[])
+{
+    int i;
+    for(i=0; i < max_num_size+5; i++)
+        brihodakar[i] = 0;
+
+    return;
+}
+
+
+
+/*
+    HIGHER LEVEL FUNCTIONS
+*/
+
+
 
 void add_bri_num(char brihodakar1[], char brihodakar2[], char answer[])
 {
