@@ -1,7 +1,7 @@
 # Brihodakar Large Number System!!!
 
 ## What is dis? :/
-Brihodakar(বৃহদাকার) Large Number System is my first hobby project in programming, the first time I'm dealing with code that's larger than 100 lines. 
+Brihodakar(বৃহদাকার - Gigantic) Large Number System is my first hobby project in programming, the first time I'm dealing with code that's larger than 100 lines. 
 
 The Brihodakar Large Number System (from now on BLNS) implements basic operations such as addition and subtraction, which it then performs on specially constructed arrays called 'Brihodakar arrays'. Brihodakar arrays are data structures used to contain and display numbers of very large sizes. Brihodakar arrays only work with integers.
 
