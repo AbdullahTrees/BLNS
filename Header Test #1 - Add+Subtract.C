@@ -2,13 +2,16 @@
 //#define DEBUG
 
 #include "BRIHODAKAR.H"     // Contains stdio and conio already...
-#include <windows.h>
+//#include <windows.h>
+
+#define _CreateArray(name); char name[max_num_size + 5] = {0}; name[0] = 'A';
 
 int main(void)
 {
     char yuugenumber1[max_num_size + 5] = {0};
-    char yuugenumber2[max_num_size + 5] = {0};
-    char answer[max_num_size + 5] = {0};
+    //char yuugenumber2[max_num_size + 5] = {0};
+    //char answer[max_num_size + 5] = {0};
+    _CreateArray(yuugenumber2);
 
     signed long long TimeStart, TimeEnd;
 

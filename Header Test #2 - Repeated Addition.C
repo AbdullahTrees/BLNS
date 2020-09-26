@@ -3,6 +3,8 @@
 
 #include "BRIHODAKAR.H"     // Contains stdio and conio already...
 #include <windows.h>
+#include <conio.h>
+
 
 int main(void)
 {

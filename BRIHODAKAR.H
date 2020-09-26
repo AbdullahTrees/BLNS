@@ -3,16 +3,23 @@
 	Made by AbdullahTrees, 2020
 
 **/
+
+#pragma warning(disable : 4996)  // This library is compatible with MS-DOS/Turbo C++ and hence needs to use old POSIX functions.
+
+#ifndef _BRIHODAKAR_    // Declaration of BLNS ONLY IF it wasn't defined before.
+
+    #define _BRIHODAKAR_     // This marks the beginning of the Brihodakar Large Number System Header/Library. Use this name to test presence of the BLNS in a sample source code.
+
+// Standard Library prerequisites
 #include <stdio.h>
 #include <conio.h>
 
+// Special constant definitions
 #ifndef max_num_size
     #define max_num_size 100
 #endif // max_num_size safety check
 
 
-#ifndef _BRIHODAKAR_    // Declaration of BLNS ONLY IF it wasn't defined before.
-    #define _BRIHODAKAR_
 
 // LOWER LEVEL FUNCTIONS: Use these directly only when necessary
 void display_num(const char brihodakar[]);											    //  BLNS: Displays the relevant Brihodakar number stored in array
@@ -52,8 +59,11 @@ void display_num(const char brihodakar[])
 
 	array_management(tempstore, 1); // So we see just the number and not all the zeroes from the Big-Endian conversion...
 
-	for (m = 0; tempstore[m] != 'A'; m++)
+	for (m = 0; tempstore[m] != 'A' && tempstore[m] != 'S'; m++)
 		tempstore[m] = tempstore[m] + '0';
+
+    if (tempstore[m] == 'S')
+        printf("-");
 
 	#ifndef DEBUG		/* Write `#define DEBUG` to see the terminating character A*/
 		tempstore[m] = '\0';
@@ -75,13 +85,16 @@ void display_array(const char brihodakar[])
 	#ifdef DEBUG
         #define da_condition (m < max_num_size)         // condition when debug active
 	#else
-        #define da_condition (tempstore[m] != 'A')      // condition when debug inactive
+        #define da_condition (tempstore[m] != 'A' && tempstore[m] != 'S')      // condition when debug inactive
     #endif
 	for (m = 0; da_condition; m++) // Simply, the for loop's condition changes depending on DEBUG state.
 	{
 		tempstore[m] = tempstore[m] + '0';
 	}
     #undef da_condition
+
+    if (tempstore[m] == 'S')
+        printf("(NEGATIVE)");
 
 	#ifndef DEBUG		/* Write `#define DEBUG` to see the terminating character A*/
 		tempstore[m] = '\0';
@@ -158,7 +171,7 @@ void array_management(char brihodakar[], int option)
 	{
         case 1: //  SHIFT LEFT FULLY: Input --> Standard Brihodakar array
         {
-            if (!(brihodakar[0] == 0 && brihodakar[1] == 'A'))            // remove all leading zeroes before number
+            if (!(brihodakar[0] == 0 && (brihodakar[1] == 'A' || brihodakar[1] == 'S')))            // remove all leading zeroes before number
             {                                   /// final, should be perfect,... (no it isn't lol, add a termination check pls)
                 while (brihodakar[0] == 0)     // Move every element one space forward IF there is a zero in front of it
                 {
@@ -168,7 +181,7 @@ void array_management(char brihodakar[], int option)
                 }
 
             // This operation can cause a large string of zeroes in brihodakar[] to turn into a null array. So, just in case
-                if (brihodakar[0] == 'A') // Turns a null array into an array of 0.
+                if (brihodakar[0] == 'A' || brihodakar[0] == 'S') // Turns a null array into an array of 0.
                 {
                     reset_array(brihodakar);
                     brihodakar[1] = 'A';
@@ -183,7 +196,7 @@ void array_management(char brihodakar[], int option)
                 int is_terminated = 0, i, j;
                 for (i=0, j = max_num_size; i < (max_num_size+5)/2 && j > 0; i++, j--)
                 {
-                    if (brihodakar[i] == 'A' || brihodakar[j] == 'A')
+                    if (brihodakar[i] == 'A' || brihodakar[j] == 'A' || brihodakar[i] == 'S' || brihodakar[j] == 'S')
                     {
                         is_terminated = 1;
                         break;
@@ -200,7 +213,7 @@ void array_management(char brihodakar[], int option)
                 }
             }
 
-            while (brihodakar[max_num_size] != 'A')   /// final, should have no problems
+            while (brihodakar[max_num_size] != 'A' && brihodakar[max_num_size] != 'S')
             {
                 int k;
                 for (k = max_num_size; k > 0; k--)
@@ -223,11 +236,11 @@ void copy_array(char destination[], const char source[]) // FINAL
 	while (i < max_num_size + 5)    /// final, should be safe now that `while` is no longer infinite
 	{
 		destination[i] = source[i];
-		if (destination[i] == 'A')
+		if (destination[i] == 'A' || destination[i] == 'S')
 			return;
 		i++;
 	}
-	printf("\n--DEBUG: Source array is unterminated!!!\n");
+	printf("\n--ERROR: Source array is unterminated!!!\n");
 	return;
 }
 
@@ -236,7 +249,11 @@ void add_array(const char conv_array1[], const char conv_array2[], char answer[]
 	int i;
 
 	// Test big-endianess of arrays
-	if (conv_array1[max_num_size] != 'A' || conv_array2[max_num_size] != 'A' || answer[max_num_size] != 'A')
+	#define conv_array1_notterminated (conv_array1[max_num_size] != 'A' && conv_array1[max_num_size] != 'S')
+	#define conv_array2_notterminated (conv_array2[max_num_size] != 'A' && conv_array2[max_num_size] != 'S')
+	#define answer_notterminated (answer[max_num_size] != 'A' && answer[max_num_size] != 'S')
+
+	if (conv_array1_notterminated || conv_array2_notterminated || answer_notterminated)  // Testing whether arrays are Big-Endian or not... WE WANT THIS TO BE 0!!
 	{
 		printf("\n--DEBUG: Addition failed: Improper array configuration. Please initialize/set arrays properly and try again\n");
 	}
@@ -264,6 +281,10 @@ void add_array(const char conv_array1[], const char conv_array2[], char answer[]
 				answer[i] = digitholder;
 		}
 	}
+	#undef conv_array1_notterminated
+	#undef conv_array2_notterminated
+	#undef answer_notterminated
+
 	return;
 }
 
@@ -273,7 +294,11 @@ void subtract_array(const char conv_array1[], const char conv_array2[], char ans
 	int i;
 
 	// Test big-endianess of arrays
-	if (conv_array1[max_num_size] != 'A' || conv_array2[max_num_size] != 'A' || answer[max_num_size] != 'A')
+	#define conv_array1_notterminated (conv_array1[max_num_size] != 'A' && conv_array1[max_num_size] != 'S')
+	#define conv_array2_notterminated (conv_array2[max_num_size] != 'A' && conv_array2[max_num_size] != 'S')
+	#define answer_notterminated (answer[max_num_size] != 'A' && answer[max_num_size] != 'S')
+
+	if (conv_array1_notterminated || conv_array2_notterminated || answer_notterminated)  // Testing whether arrays are Big-Endian or not... WE WANT THIS TO BE 0!!
 	{
 		printf("\n--DEBUG: Subtraction failed: Improper array configuration. Please initialize/set arrays properly and try again\n");
 	}
@@ -301,6 +326,10 @@ void subtract_array(const char conv_array1[], const char conv_array2[], char ans
 				answer[i] = digitholder;
 		}
 	}
+	#undef conv_array1_notterminated
+	#undef conv_array2_notterminated
+	#undef answer_notterminated
+
 	return;
 }
 
@@ -345,4 +374,4 @@ void subtract_bri_num(char brihodakar1[], char brihodakar2[], char answer[])
 }
 
 
-#endif
+#endif         // BLNS Ends
