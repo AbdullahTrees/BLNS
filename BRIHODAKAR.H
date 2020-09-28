@@ -4,22 +4,39 @@
 
 **/
 
+/*
+	------------------------------------------------
+    BEGIN C PREPROCESSOR INSTRUCTIONS
+	------------------------------------------------
+*/
+
 #pragma warning(disable : 4996)  // This library is compatible with MS-DOS/Turbo C++ and hence needs to use old POSIX functions.
 
 #ifndef _BRIHODAKAR_    // Declaration of BLNS ONLY IF it wasn't defined before.
-
     #define _BRIHODAKAR_     // This marks the beginning of the Brihodakar Large Number System Header/Library. Use this name to test presence of the BLNS in a sample source code.
 
 // Standard Library prerequisites
+//-----------------------------------
 #include <stdio.h>
 #include <conio.h>
 
 // Special constant definitions
+//-----------------------------------
 #ifndef max_num_size
-    #define max_num_size 100
-#endif // max_num_size safety check
+    #define max_num_size 100     // max_num_size safety check/default value. For custom number sizes, define max_num_size BEFORE including "BRIHODAKAR.H"
+#endif 
 
+// Macro definitions
+//----------------------
+#define _CreateArray(name) char name[max_num_size + 5] = {'A'}       // To make creating arrays a bit easier and prevent out of bounds array accesses... 
+// NOTE: This is a pseudo-function and should be followed by a semicolon! 
+// NOTE: Do not use this macro if you need to create an array with initial values, set it manually instead!
 
+/*
+	---------------------------------------------------
+    BEGIN FUNCTION PROTOTYPES AND IMPLEMENTATION
+	---------------------------------------------------
+*/
 
 // LOWER LEVEL FUNCTIONS: Use these directly only when necessary
 void display_num(const char brihodakar[]);											    //  BLNS: Displays the relevant Brihodakar number stored in array
@@ -33,6 +50,10 @@ void copy_array(char destination[], const char source[]);									//  BLNS: Copi
 void add_array(const char conv_array1[], const char conv_array2[], char answer[]);          //  BLNS: Adds two big-endian converted Brihodakar arrays, brihodakar1 and brihodakar2
 void subtract_array(const char conv_array1[], const char conv_array2[], char answer[]);     //  BLNS: Subtracts two big-endian converted Brihodakar arrays, conv_array1 MINUS conv_array2. ORDER MATTERS
 void reset_array(char brihodakar[]);                                                        //  BLNS: Empties the entire Brihodakar array by writing zeroes... Equivalent to newly initializing a Brihodakar array
+void bri_itoa(unsigned long long int num, char brihodakar[]);								//  BLNS: Directly inputs standard C integers into the array.
+void removegarbage(char brihodakar[]);														//  BLNS: Empties the contents of the array after the index of the first terminating character.
+unsigned int find_terminator(char brihodakar[]);											//  BLNS: Returns the array index at which the terminating character exists in a Brihodakar array
+
 
 // HIGHER LEVEL FUNCTIONS: Consisting of use of multiple other functions. Much easier to use.
 void add_bri_num(char brihodakar1[], char brihodakar2[], char answer[]);
@@ -76,31 +97,41 @@ void display_num(const char brihodakar[])
 }
 
 
-void display_array(const char brihodakar[])
+void display_array(const char brihodakar[])		// THIS IS A DEBUG FUNCTION ANYWAY
 {
-	int m;
+	int m, terminator_at;
 	char tempstore[max_num_size + 5] = "";
-	copy_array(tempstore, brihodakar);
+	// Special use of copy_array function. We want to copy the entire array, even including contents after the terminating character...
+	{
+		int i = 0;
+		while (i < max_num_size + 5)    /// final, should be safe now that `while` is no longer infinite
+		{
+			tempstore[i] = brihodakar[i];
+			i++;
+		}
+	}
 
-	#ifdef DEBUG
-        #define da_condition (m < max_num_size)         // condition when debug active
-	#else
-        #define da_condition (tempstore[m] != 'A' && tempstore[m] != 'S')      // condition when debug inactive
-    #endif
+	//#ifdef DEBUG
+        #define da_condition (m < max_num_size + 5)         // condition when debug active
+	//#else
+    //    #define da_condition (tempstore[m] != 'A' && tempstore[m] != 'S')      // condition when debug inactive
+    //#endif
 	for (m = 0; da_condition; m++) // Simply, the for loop's condition changes depending on DEBUG state.
 	{
+		if (tempstore[m] == 'A' || tempstore[m] == 'S')
+		{
+			terminator_at = m;
+			continue;
+		}
 		tempstore[m] = tempstore[m] + '0';
 	}
     #undef da_condition
 
-    if (tempstore[m] == 'S')
+    if (tempstore[terminator_at] == 'S')
         printf("(NEGATIVE)");
 
-	#ifndef DEBUG		/* Write `#define DEBUG` to see the terminating character A*/
-		tempstore[m] = '\0';
-    #else
-        tempstore[m+1] = '\0';
-    #endif
+	tempstore[(max_num_size + 5) - 1] = '\0';
+
 
 	printf(tempstore);
 	return;
@@ -114,7 +145,11 @@ void input_to_array(char brihodakar[], int numsize)
 
 	reset_array(brihodakar);
 
-	input:
+sign_decision:
+	/*later...*/
+
+
+input:
 	for (i = 0; i<numsize; i++)
 	{
 		in = getch();
@@ -163,16 +198,16 @@ void input_to_array(char brihodakar[], int numsize)
 	return;
 }
 
+
 void array_management(char brihodakar[], int option)
 {
-	int i;
-
 	switch (option)
 	{
-        case 1: //  SHIFT LEFT FULLY: Input --> Standard Brihodakar array
+        case 1: //  SHIFT LEFT FULLY: Input --> Standard Brihodakar array   // remove all leading zeroes before number
         {
-            if (!(brihodakar[0] == 0 && (brihodakar[1] == 'A' || brihodakar[1] == 'S')))            // remove all leading zeroes before number
-            {                                   /// final, should be perfect,... (no it isn't lol, add a termination check pls)
+			// Condition: if the array starts with zero and is not actually 'zero' (which should be 0A)
+            if (!(brihodakar[0] == 0 && (brihodakar[1] == 'A' || brihodakar[1] == 'S')))
+            {
                 while (brihodakar[0] == 0)     // Move every element one space forward IF there is a zero in front of it
                 {
                     int k;
@@ -186,6 +221,11 @@ void array_management(char brihodakar[], int option)
                     reset_array(brihodakar);
                     brihodakar[1] = 'A';
                 }
+				else
+				{
+					removegarbage(brihodakar);
+					return;
+				}
             }
         }
         break;
@@ -194,7 +234,7 @@ void array_management(char brihodakar[], int option)
             // TERMINATION CHECK
             {
                 int is_terminated = 0, i, j;
-                for (i=0, j = max_num_size; i < (max_num_size+5)/2 && j > 0; i++, j--)
+                for (i=0, j = max_num_size; (i < (max_num_size+5)/2) && j > 0; i++, j--)
                 {
                     if (brihodakar[i] == 'A' || brihodakar[j] == 'A' || brihodakar[i] == 'S' || brihodakar[j] == 'S')
                     {
@@ -211,6 +251,10 @@ void array_management(char brihodakar[], int option)
                     reset_array(brihodakar);
                     brihodakar[1] = 'A';
                 }
+				else
+				{
+					removegarbage(brihodakar);
+				}
             }
 
             while (brihodakar[max_num_size] != 'A' && brihodakar[max_num_size] != 'S')
@@ -225,6 +269,8 @@ void array_management(char brihodakar[], int option)
             }
         }
         break;
+		default:
+			printf("\n--ERROR: Wrong option parameter of array management function!! Nothing happened!\n");
 	}
 	return;
 }
@@ -244,6 +290,7 @@ void copy_array(char destination[], const char source[]) // FINAL
 	return;
 }
 
+
 void add_array(const char conv_array1[], const char conv_array2[], char answer[])
 {
 	int i;
@@ -253,6 +300,7 @@ void add_array(const char conv_array1[], const char conv_array2[], char answer[]
 	#define conv_array2_notterminated (conv_array2[max_num_size] != 'A' && conv_array2[max_num_size] != 'S')
 	#define answer_notterminated (answer[max_num_size] != 'A' && answer[max_num_size] != 'S')
 
+	// Condition: IF conv_array1, conv_array2, and answer(ALL 3) do not have 'A' OR 'S' as the final character in the array
 	if (conv_array1_notterminated || conv_array2_notterminated || answer_notterminated)  // Testing whether arrays are Big-Endian or not... WE WANT THIS TO BE 0!!
 	{
 		printf("\n--DEBUG: Addition failed: Improper array configuration. Please initialize/set arrays properly and try again\n");
@@ -298,6 +346,7 @@ void subtract_array(const char conv_array1[], const char conv_array2[], char ans
 	#define conv_array2_notterminated (conv_array2[max_num_size] != 'A' && conv_array2[max_num_size] != 'S')
 	#define answer_notterminated (answer[max_num_size] != 'A' && answer[max_num_size] != 'S')
 
+	// Condition: IF conv_array1, conv_array2, and answer(ALL 3) do not have 'A' OR 'S' as the final character in the array
 	if (conv_array1_notterminated || conv_array2_notterminated || answer_notterminated)  // Testing whether arrays are Big-Endian or not... WE WANT THIS TO BE 0!!
 	{
 		printf("\n--DEBUG: Subtraction failed: Improper array configuration. Please initialize/set arrays properly and try again\n");
@@ -337,10 +386,69 @@ void subtract_array(const char conv_array1[], const char conv_array2[], char ans
 void reset_array(char brihodakar[])
 {
     int i;
-    for(i=0; i < max_num_size+5; i++)
+    for(i = 0; i < max_num_size + 5; i++)
         brihodakar[i] = 0;
 
     return;
+}
+
+
+void bri_itoa(unsigned long long int num, char brihodakar[])  // INPUT FUNCTION!!! brihodakar[] should be wiped first!
+{
+	int i, current_digit;
+
+	reset_array(brihodakar);
+	array_management(brihodakar, 2);
+
+	for (i = max_num_size - 1; i >= 0; i--)
+	{
+		for (current_digit = 0; current_digit<10; current_digit++, num--)
+		{
+			if (num % 10 == 0)
+			{
+				brihodakar[i] = current_digit;
+				num = num / 10;
+				break;
+			}
+		}
+		if (num == 0)
+			break;
+	}
+	array_management(brihodakar, 1);
+	return;
+}
+
+
+void removegarbage(char brihodakar[])
+{
+	int i;
+	int terminator_at = find_terminator(brihodakar);
+
+	if (terminator_at < 0)
+	{
+		array_management(brihodakar, 2);
+		return;
+	}
+
+	for (i = terminator_at + 1; i < max_num_size + 5; i++)
+		brihodakar[i] = 0;
+
+	return;
+}
+
+
+unsigned int find_terminator(char brihodakar[])
+{
+	int i;
+
+	for (i = 0; i < max_num_size + 5; i++)
+	{
+		if (brihodakar[i] == 'A' || brihodakar[i] == 'S')
+			return i; // The first terminator is the only terminator we wanna care about... The rest is garbage.
+	}
+
+	printf("\n--ERROR: Array is unterminated!!!\n");
+	return -1;
 }
 
 

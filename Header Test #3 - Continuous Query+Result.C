@@ -11,7 +11,7 @@ int main(void)
 
     char ch;
 
-    printf("BRIHODAKAR LARGE NUMBER SYSTEM!\nContinuous User Addition/Subtraction\n\n\n");
+    printf("BRIHODAKAR LARGE NUMBER SYSTEM!\nContinuous User Addition/Subtraction... Press Q to exit! \n\n\n");
 
     printf("Enter a number: ");
     input_to_array(yuugenumber1, max_num_size);
@@ -48,7 +48,8 @@ int main(void)
         ch = getche();
         if (ch != '+' && ch != '-')
         {
-            printf("\nI don't understand what you're saying... Try again...\n");
+            if (ch != 'q' && ch != 'Q')
+                printf("\nI don't understand what you're saying... Try again...\n");
             continue;
         }
         if (ch == '+')
@@ -81,8 +82,6 @@ int main(void)
             display_num(total);
             #endif // DEBUG
         }
-        printf("\nExit now? (Q/any other key) ");
-        ch = getche();
     }
 
     return 0;
