@@ -25,7 +25,6 @@ void array_management(char brihodakar[], int option);									//  BLNS: Multi-pu
 void copy_array(char destination[], const char source[]);									//  BLNS: Copies the source array into the destination array
 void add_array(const char conv_array1[], const char conv_array2[], char answer[]);          //  BLNS: Adds two big-endian converted Brihodakar arrays, brihodakar1 and brihodakar2
 void subtract_array(const char conv_array1[], const char conv_array2[], char answer[]);     //  BLNS: Subtracts two big-endian converted Brihodakar arrays, conv_array1 MINUS conv_array2. ORDER MATTERS
-void shift_array_polarity(char conv_array1[]);                                              //  BLNS: Turns a negative array into positive and vice versa
 void reset_array(char brihodakar[]);                                                        //  BLNS: Empties the entire Brihodakar array by writing zeroes... Equivalent to newly initializing a Brihodakar array
 
 // HIGHER LEVEL FUNCTIONS: Consisting of use of multiple other functions. Much easier to use.
@@ -53,7 +52,7 @@ void display_num(const char brihodakar[])
 
 	array_management(tempstore, 1); // So we see just the number and not all the zeroes from the Big-Endian conversion...
 
-	for (m = 0; tempstore[m] != 'A' && tempstore[m] != 'S'; m++)
+	for (m = 0; tempstore[m] != 'A'; m++)
 		tempstore[m] = tempstore[m] + '0';
 
 	#ifndef DEBUG		/* Write `#define DEBUG` to see the terminating character A*/
@@ -76,7 +75,7 @@ void display_array(const char brihodakar[])
 	#ifdef DEBUG
         #define da_condition (m < max_num_size)         // condition when debug active
 	#else
-        #define da_condition (tempstore[m] != 'A' && tempstore[m] != 'S')      // condition when debug inactive
+        #define da_condition (tempstore[m] != 'A')      // condition when debug inactive
     #endif
 	for (m = 0; da_condition; m++) // Simply, the for loop's condition changes depending on DEBUG state.
 	{
@@ -97,56 +96,36 @@ void display_array(const char brihodakar[])
 
 void input_to_array(char brihodakar[], int numsize)
 {
-	char in, is_negative = 0;
+	char in;
 	int i;
 
 	reset_array(brihodakar);
 
 	input:
-	for (i = 0; i<numsize; i++) // Standard Input sequence
+	for (i = 0; i<numsize; i++)
 	{
 		in = getch();
 
 		if (in >= '0' && in <= '9')
 		{
-			brihodakar[i] = in - '0';  // Stores raw value of number into the 'char' array instead of its graphical interpretation. Trust me.
-
+			brihodakar[i] = in - '0';
 			if (i == numsize - 1)
-            {
-                if (is_negative)
-                    brihodakar[i + 1] = 'S';
-                else
-                    brihodakar[i + 1] = 'A';
-            }
-
+				brihodakar[i + 1] = 'A';
 			printf("%c", in);
 		}
 		else
 		{
-			if (in == '\r') // End Brihodakar array
+			if (in == '\r')
 			{
-				if (is_negative)
-                    brihodakar[i] = 'S';
-                else
-                    brihodakar[i] = 'A'; // Terminating characters are A and S, use this to test manually crafted arrays later
-
+				brihodakar[i] = 'A'; // Terminating character, use this to test
 				printf("\n");
 				break;
 			}
-			if (in == '.')  // Prevent decimals
+			if (in == '.')
 			{
 				printf("\nSorry, Brihodakar is for integers only... Please try again\nPlease enter the number: ");
 				goto input;
 			}
-			if (i == 0 && (in == '-' || in == '+'))  // Positive/Negative Numbers
-            {
-                if (in == '-')
-                    is_negative = 1;
-
-                printf("%c", in);
-                i++;
-                continue;
-            }
 			if (in == '\b')
 			{
 				if (i == 0)
@@ -179,7 +158,7 @@ void array_management(char brihodakar[], int option)
 	{
         case 1: //  SHIFT LEFT FULLY: Input --> Standard Brihodakar array
         {
-            if (!(brihodakar[0] == 0 && (brihodakar[1] == 'A' || brihodakar[1] == 'S')))            // remove all leading zeroes before number
+            if (!(brihodakar[0] == 0 && brihodakar[1] == 'A'))            // remove all leading zeroes before number
             {                                   /// final, should be perfect,... (no it isn't lol, add a termination check pls)
                 while (brihodakar[0] == 0)     // Move every element one space forward IF there is a zero in front of it
                 {
@@ -190,11 +169,6 @@ void array_management(char brihodakar[], int option)
 
             // This operation can cause a large string of zeroes in brihodakar[] to turn into a null array. So, just in case
                 if (brihodakar[0] == 'A') // Turns a null array into an array of 0.
-                {
-                    reset_array(brihodakar);
-                    brihodakar[1] = 'A';
-                }
-                if (brihodakar[0] == 'S') // Turns a null array into an array of 0.
                 {
                     reset_array(brihodakar);
                     brihodakar[1] = 'A';
@@ -214,11 +188,6 @@ void array_management(char brihodakar[], int option)
                         is_terminated = 1;
                         break;
                     }
-                    if (brihodakar[i] == 'S' || brihodakar[j] == 'S')
-                    {
-                        is_terminated = 1;
-                        break;
-                    }
                 }
 
                 if (is_terminated == 0)
@@ -231,7 +200,7 @@ void array_management(char brihodakar[], int option)
                 }
             }
 
-            while (brihodakar[max_num_size] != 'A' && brihodakar[max_num_size] != 'S')   /// final, should have no problems
+            while (brihodakar[max_num_size] != 'A')   /// final, should have no problems
             {
                 int k;
                 for (k = max_num_size; k > 0; k--)
@@ -254,7 +223,7 @@ void copy_array(char destination[], const char source[]) // FINAL
 	while (i < max_num_size + 5)    /// final, should be safe now that `while` is no longer infinite
 	{
 		destination[i] = source[i];
-		if (destination[i] == 'A' || destination[i] == 'S')
+		if (destination[i] == 'A')
 			return;
 		i++;
 	}
