@@ -1,5 +1,5 @@
 # Brihodakar Large Number System!!!
-
+###### In the Name of Allah, the Most Gracious, the Most Merciful
 ## What is dis? :/
 Brihodakar(বৃহদাকার - Gigantic) Large Number System is my first hobby project in programming, the first time I'm dealing with code that's larger than 100 lines. 
 
@@ -68,3 +68,6 @@ If we try displaying that right now with our `display_num()` function, there's g
 Any other questions, be sure to let me know in Discord!
 Found a bug? THANKS! Please open an issue! Or maybe let me know in Discord, that too!
 Want to copy this code? NooOOooOoo, this is something I wrote up in less than 2 months after learning C, I'm sure you can figure this kid-stuff out by yourself if you really need it... (so I guess you *can* copy it...)
+
+## Credits
+As this is my first project, I'd like to mention something about me learning programming. Programming was notoriously difficult for me, even though I first started at the age of 7 or 8, trying off Visual Basic from a Video Tutorial and 
